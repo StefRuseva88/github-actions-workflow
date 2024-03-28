@@ -1,7 +1,11 @@
-name: Manual Workflow Testing
+name: Workflow Testing
 
 on: 
  workflow_dispatch:
+ push: 
+  branches: [ "main" ]
+ pull_request:
+  branches: [ "main" ]
 
 jobs:
  greet:
