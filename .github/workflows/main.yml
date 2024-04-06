@@ -15,7 +15,7 @@ jobs:
   runs-on: ubuntu-latest
   steps: 
   - name: Greet the User
-    run: echo "Hello World!"
+    run: echo "Hello Stef!"
   - name: Show directory before checkout
     run: ls -l
   - name: Checkout our code  
