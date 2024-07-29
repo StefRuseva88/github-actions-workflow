@@ -1,4 +1,4 @@
-# GitHub Actions Workshop by GitHub
+# GitHub Actions Workshop by GitHub 
 
 > *Lift-off with GitHub Actions - it's not rocket-science (unless you use it for rockets).* 🚀
 
