@@ -15,18 +15,18 @@ jobs:
       contents: read
       pull-requests: write
     steps:
-    - uses: actions/checkout@v3
-    - name: Use Node.js 16.x
-      uses: actions/setup-node@v3
-      with:
-        node-version: 16.x
-        cache: npm
-    - run: npm ci
-    - run: npm run build --if-present
-    - run: npm test
-    - name: Report Coverage
-      uses: davelosert/vitest-coverage-report-action@v2
-      if: always()
+      - uses: actions/checkout@v3
+      - name: Use Node.js 16.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+          cache: npm
+      - run: npm ci
+      - run: npm run build --if-present
+      - run: npm test
+      - name: Report Coverage
+        uses: davelosert/vitest-coverage-report-action@v2
+        if: always()
 
   package-and-publish:
     needs:
@@ -40,6 +40,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.ref || 'main' }}
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
