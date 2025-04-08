@@ -1,25 +1,21 @@
-name: 'Test and Coverage'
-on: 
-  pull_request:
+name: Test and Coverage
+
+on: [push, pull_request]
 
 jobs:
-  test:
+  build:
     runs-on: ubuntu-latest
-    
-    permissions:
-      contents: read
-      pull-requests: write
 
     steps:
-    - uses: actions/checkout@v4
-    - name: 'Install Node'
-      uses: actions/setup-node@v4
+    - uses: actions/checkout@v2
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
       with:
-        node-version: '20.x'
-    - name: 'Install Deps'
-      run: npm install --legacy-peer-deps
-    - name: 'Test'
-      run: npx vitest --coverage
-    - name: 'Report Coverage'
-      if: always() 
+        node-version: '16'
+    - run: npm install
+    - run: npm run test:ci # Ensure this runs vitest and generates the coverage report
+    - name: Upload Coverage Report
       uses: davelosert/vitest-coverage-report-action@v2
+      with:
+        pr: true
+        fileCoverageRootPath: './coverage'
