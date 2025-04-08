@@ -1,5 +1,5 @@
 # Build container for the frontend bundle
-FROM node:16 as build
+FROM node:23 as build
 
 WORKDIR /usr/src/app
 
@@ -9,7 +9,7 @@ RUN npm ci
 RUN npm run build:staging
 
 # Create the server to host the static files
-FROM node:16 as server
+FROM node:23 as server
 
 WORKDIR /usr/src/app
 
