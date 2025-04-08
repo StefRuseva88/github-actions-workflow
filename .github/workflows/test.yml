@@ -7,9 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     
     permissions:
-      # Required to checkout the code
       contents: read
-      # Required to put a comment into the pull-request
       pull-requests: write
 
     steps:
@@ -19,11 +17,9 @@ jobs:
       with:
         node-version: '20.x'
     - name: 'Install Deps'
-      run: npm install
+      run: npm install --legacy-peer-deps
     - name: 'Test'
-      run: npx vitest --coverage.enabled true
+      run: npx vitest --coverage
     - name: 'Report Coverage'
-      # Set if: always() to also generate the report if tests are failing
-      # Only works if you set `reportOnFailure: true` in your vite config as specified above
       if: always() 
-      uses:  davelosert/vitest-coverage-report-action@v2
+      uses: davelosert/vitest-coverage-report-action@v2
