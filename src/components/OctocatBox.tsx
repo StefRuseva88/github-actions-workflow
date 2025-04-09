@@ -9,7 +9,7 @@ interface OctoItemBoxProps {
   onToggleOctocat: (octocat: OctocatState) => void;
 }
 
-const OctoImage = styled.img`
+const OctoImage = styled.img<React.ImgHTMLAttributes<HTMLImageElement>>`
   max-width: 100%;
 `;
 
