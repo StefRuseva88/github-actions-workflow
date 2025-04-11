@@ -13,8 +13,7 @@
   "extends": [
     "prettier",
     "eslint:recommended",
-    "plugin:@typescript-eslint/recommended",
-    "plugin:primer-react/recommended"
+    "plugin:@typescript-eslint/recommended"
   ],
   "rules": {
     "prettier/prettier": ["error"],
