@@ -13,12 +13,10 @@
   "extends": [
     "prettier",
     "eslint:recommended",
-    "plugin:@typescript-eslint/recommended",
-    "plugin:primer-react/recommended"
+    "plugin:@typescript-eslint/recommended"
   ],
   "rules": {
     "prettier/prettier": ["error"],
-    "@typescript-eslint/no-non-null-assertion": "off",
-    "primer-react/no-deprecated-colors": ["off"] // Turn off the deprecation rule
+    "@typescript-eslint/no-non-null-assertion": "off"
   }
 }
