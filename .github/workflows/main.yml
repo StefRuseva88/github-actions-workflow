@@ -11,7 +11,7 @@ on:
 jobs:
  greet:
   env: 
-   MY_ENV: "John Doe"
+   MY_ENV: "Jane Doe"
   runs-on: ubuntu-latest
   steps: 
   - name: Greet the User
