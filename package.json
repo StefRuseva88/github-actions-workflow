@@ -7,7 +7,7 @@
     "build": "tsc && vite build",
     "build:staging": "tsc && vite build --mode staging",
     "lint": "eslint ./src/**/*",
-    "test": "vitest --coverage",
+    "test": "vitest run --coverage",
     "typecheck": "tsc --noEmit",
     "preview": "vite preview"
   },
@@ -39,7 +39,7 @@
     "jsdom": "20.0.3",
     "prettier": "2.8.0",
     "typescript": "4.9.3",
-    "vite": "5.4.8",
+    "vite": "5.4.19",
     "vitest": "3.1.1"
   }
 }
