@@ -7,7 +7,7 @@
     "build": "tsc && vite build",
     "build:staging": "tsc && vite build --mode staging",
     "lint": "eslint ./src/**/*",
-    "test": "vitest run --coverage",
+    "test": "vitest --coverage.enabled true --coverage.reporter=json-summary"
     "typecheck": "tsc --noEmit",
     "preview": "vite preview"
   },
