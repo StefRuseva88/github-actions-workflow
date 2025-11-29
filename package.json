@@ -43,6 +43,7 @@
     "vitest": "3.1.1"
   },
   "overrides": {
-    "form-data": "^4.0.0"
+    "form-data": "^4.0.0",
+    "glob": "^10.5.0"
   }
 }
