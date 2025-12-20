@@ -1,31 +1,31 @@
-import { createInMemoryOctocatApi } from "../api/InMemoryOctocatApi";
-import { Login } from "./Login";
-import { renderWithProviders } from "../../test/renderWithProviders";
-import { screen, cleanup } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
-import { afterEach, expect, describe, it } from "vitest";
-import { Route, Routes } from "react-router-dom";
-import { OctocatApi } from "../api/OctocatApi";
-import { ServerUnavailableError } from "../api/errors/ServerUnavailableError";
+import { createInMemoryOctocatApi } from '../api/InMemoryOctocatApi';
+import { Login } from './Login';
+import { renderWithProviders } from '../../test/renderWithProviders';
+import { screen, cleanup } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { afterEach, expect, describe, it } from 'vitest';
+import { Route, Routes } from 'react-router-dom';
+import { OctocatApi } from '../api/OctocatApi';
+import { ServerUnavailableError } from '../api/errors/ServerUnavailableError';
 
-describe("<Login />", (): void => {
+describe('<Login />', (): void => {
   afterEach((): void => {
     cleanup();
   });
 
-  it("renders the login form.", (): void => {
+  it('renders the login form.', (): void => {
     const inMemoryApi = createInMemoryOctocatApi();
     renderWithProviders({ component: <Login />, inMemoryApi });
 
-    expect(screen.getByLabelText("Username")).toBeDefined();
-    expect(screen.getByLabelText("Password")).toBeDefined();
+    expect(screen.getByLabelText('Username')).toBeDefined();
+    expect(screen.getByLabelText('Password')).toBeDefined();
   });
 
   it("redirects to '/' after a sucessful login.", async (): Promise<void> => {
     const inMemoryApi = createInMemoryOctocatApi();
     await inMemoryApi.addUser({
-      userName: "testUser",
-      password: "testPassword",
+      userName: 'testUser',
+      password: 'testPassword',
     });
 
     const MockHomePage = () => <p data-testid="homepage">Home Page</p>;
@@ -38,72 +38,72 @@ describe("<Login />", (): void => {
         </Routes>
       ),
       inMemoryApi,
-      initialRoute: "/login",
+      initialRoute: '/login',
     });
 
-    await userEvent.type(screen.getByLabelText("Username"), "testUser");
-    await userEvent.type(screen.getByLabelText("Password"), "testPassword");
-    await userEvent.click(screen.getByText("Sign in"));
+    await userEvent.type(screen.getByLabelText('Username'), 'testUser');
+    await userEvent.type(screen.getByLabelText('Password'), 'testPassword');
+    await userEvent.click(screen.getByText('Sign in'));
 
-    expect(await screen.findByTestId("homepage")).toBeDefined();
+    expect(await screen.findByTestId('homepage')).toBeDefined();
   });
 
-  it("shows error message if username / password is wrong.", async (): Promise<void> => {
+  it('shows error message if username / password is wrong.', async (): Promise<void> => {
     const inMemoryApi = createInMemoryOctocatApi();
     await inMemoryApi.addUser({
-      userName: "testuser",
-      password: "testpassword",
+      userName: 'testuser',
+      password: 'testpassword',
     });
 
     renderWithProviders({ component: <Login />, inMemoryApi });
 
-    await userEvent.type(screen.getByLabelText("Username"), "testuser");
-    await userEvent.type(screen.getByLabelText("Password"), "wrongpassword");
-    userEvent.click(screen.getByText("Sign in"));
+    await userEvent.type(screen.getByLabelText('Username'), 'testuser');
+    await userEvent.type(screen.getByLabelText('Password'), 'wrongpassword');
+    userEvent.click(screen.getByText('Sign in'));
 
     expect(
-      await screen.findByText("Invalid username or password.")
+      await screen.findByText('Invalid username or password.')
     ).toBeDefined();
   });
 
-  it("shows server error if auth server is not reachable.", async (): Promise<void> => {
+  it('shows server error if auth server is not reachable.', async (): Promise<void> => {
     const inMemoryApi: OctocatApi = {
       ...createInMemoryOctocatApi(),
       loginUser() {
-        throw new ServerUnavailableError("Test Error");
+        throw new ServerUnavailableError('Test Error');
       },
     };
 
     renderWithProviders({ component: <Login />, inMemoryApi });
 
-    userEvent.type(screen.getByLabelText("Username"), "testuser");
-    userEvent.type(screen.getByLabelText("Password"), "wrongpassword");
-    userEvent.click(screen.getByText("Sign in"));
+    userEvent.type(screen.getByLabelText('Username'), 'testuser');
+    userEvent.type(screen.getByLabelText('Password'), 'wrongpassword');
+    userEvent.click(screen.getByText('Sign in'));
 
     expect(
       await screen.findByText(
-        "Authentication server not available. Please try again later."
+        'Authentication server not available. Please try again later.'
       )
     ).toBeDefined();
   });
 
-  it("shows general error if api returns unknown error.", async (): Promise<void> => {
+  it('shows general error if api returns unknown error.', async (): Promise<void> => {
     const inMemoryApi: OctocatApi = {
       ...createInMemoryOctocatApi(),
       loginUser() {
-        throw new Error("Unknown Error");
+        throw new Error('Unknown Error');
       },
     };
 
     renderWithProviders({ component: <Login />, inMemoryApi });
 
-    userEvent.type(screen.getByLabelText("Username"), "testuser");
-    userEvent.type(screen.getByLabelText("Password"), "wrongpassword");
-    userEvent.click(screen.getByText("Sign in"));
+    userEvent.type(screen.getByLabelText('Username'), 'testuser');
+    userEvent.type(screen.getByLabelText('Password'), 'wrongpassword');
+    userEvent.click(screen.getByText('Sign in'));
 
     expect(
       await screen.findByText(
-        "Unexpected Error. Please contact the administrator."
+        'Unexpected Error. Please contact the administrator.'
       )
     ).toBeDefined();
   });

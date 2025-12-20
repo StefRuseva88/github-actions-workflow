@@ -1,6 +1,6 @@
-import { OctocatApi } from "./OctocatApi";
-import { FunctionComponent, PropsWithChildren, ReactElement } from "react";
-import React, { useContext } from "react";
+import { OctocatApi } from './OctocatApi';
+import { FunctionComponent, PropsWithChildren, ReactElement } from 'react';
+import React, { useContext } from 'react';
 
 const ApiContext = React.createContext<OctocatApi | undefined>(undefined);
 

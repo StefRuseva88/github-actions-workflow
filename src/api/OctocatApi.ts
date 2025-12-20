@@ -1,5 +1,5 @@
-import { Octocat } from "./types/Octocat";
-import { User } from "./types/User";
+import { Octocat } from './types/Octocat';
+import { User } from './types/User';
 
 type UserPassword = {
   userName: string;

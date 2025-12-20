@@ -1,0 +1,155 @@
+name: Code Quality
+
+on:
+  pull_request:
+    branches: [ main ]
+  push:
+    branches: [ main ]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  code-quality:
+    name: Code Quality Checks
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+      
+      - name: Install Dependencies
+        run: npm ci
+        env:
+          CYPRESS_INSTALL_BINARY: 0
+      
+      - name: Run ESLint
+        id: eslint
+        run: |
+          echo "Running ESLint..."
+          npm run lint > eslint-output.txt 2>&1 || echo "ESLint found issues"
+          cat eslint-output.txt
+        continue-on-error: true
+      
+      - name: Run Prettier Check
+        id: prettier
+        run: |
+          echo "Running Prettier check..."
+          npm run format:check > prettier-output.txt 2>&1 || echo "Prettier found formatting issues"
+          cat prettier-output.txt
+        continue-on-error: true
+      
+      - name: Run TypeScript Check
+        id: typecheck
+        run: |
+          echo "Running TypeScript type checking..."
+          npm run typecheck > typecheck-output.txt 2>&1 || echo "TypeScript found type errors"
+          cat typecheck-output.txt
+        continue-on-error: true
+      
+      - name: Check Results and Create Summary
+        id: check-results
+        run: |
+          ESLINT_EXIT=0
+          PRETTIER_EXIT=0
+          TYPECHECK_EXIT=0
+          
+          # Check ESLint
+          if grep -q "error" eslint-output.txt 2>/dev/null; then
+            ESLINT_EXIT=1
+            echo "eslint_status=❌ Failed" >> $GITHUB_OUTPUT
+          else
+            echo "eslint_status=✅ Passed" >> $GITHUB_OUTPUT
+          fi
+          
+          # Check Prettier
+          if grep -q "Code style issues found" prettier-output.txt 2>/dev/null; then
+            PRETTIER_EXIT=1
+            echo "prettier_status=❌ Failed" >> $GITHUB_OUTPUT
+          else
+            echo "prettier_status=✅ Passed" >> $GITHUB_OUTPUT
+          fi
+          
+          # Check TypeScript
+          if grep -q "error TS" typecheck-output.txt 2>/dev/null; then
+            TYPECHECK_EXIT=1
+            echo "typecheck_status=❌ Failed" >> $GITHUB_OUTPUT
+          else
+            echo "typecheck_status=✅ Passed" >> $GITHUB_OUTPUT
+          fi
+          
+          # Overall status
+          if [ $ESLINT_EXIT -ne 0 ] || [ $PRETTIER_EXIT -ne 0 ] || [ $TYPECHECK_EXIT -ne 0 ]; then
+            echo "overall_status=failed" >> $GITHUB_OUTPUT
+            exit 1
+          else
+            echo "overall_status=passed" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Comment on PR with Results
+        if: github.event_name == 'pull_request' && failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            
+            let eslintOutput = '';
+            let prettierOutput = '';
+            let typecheckOutput = '';
+            
+            try {
+              eslintOutput = fs.readFileSync('eslint-output.txt', 'utf8');
+            } catch (e) { eslintOutput = 'No output'; }
+            
+            try {
+              prettierOutput = fs.readFileSync('prettier-output.txt', 'utf8');
+            } catch (e) { prettierOutput = 'No output'; }
+            
+            try {
+              typecheckOutput = fs.readFileSync('typecheck-output.txt', 'utf8');
+            } catch (e) { typecheckOutput = 'No output'; }
+            
+            let comment = `## 🔍 Code Quality Check Results\n\n`;
+            comment += `| Check | Status |\n`;
+            comment += `|-------|--------|\n`;
+            comment += `| ESLint | ${{ steps.check-results.outputs.eslint_status || '❓ Unknown' }} |\n`;
+            comment += `| Prettier | ${{ steps.check-results.outputs.prettier_status || '❓ Unknown' }} |\n`;
+            comment += `| TypeScript | ${{ steps.check-results.outputs.typecheck_status || '❓ Unknown' }} |\n\n`;
+            
+            if (eslintOutput.includes('error')) {
+              comment += `### ESLint Issues\n\n<details>\n<summary>Click to expand</summary>\n\n\`\`\`\n${eslintOutput.substring(0, 2000)}\n\`\`\`\n</details>\n\n`;
+            }
+            
+            if (prettierOutput.includes('Code style issues')) {
+              comment += `### Prettier Issues\n\n<details>\n<summary>Click to expand</summary>\n\n\`\`\`\n${prettierOutput.substring(0, 2000)}\n\`\`\`\n</details>\n\n`;
+              comment += `💡 **Tip:** Run \`npm run format\` to automatically fix formatting issues.\n\n`;
+            }
+            
+            if (typecheckOutput.includes('error TS')) {
+              comment += `### TypeScript Issues\n\n<details>\n<summary>Click to expand</summary>\n\n\`\`\`\n${typecheckOutput.substring(0, 2000)}\n\`\`\`\n</details>\n\n`;
+            }
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
+      
+      - name: Upload Quality Reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: code-quality-reports
+          path: |
+            eslint-output.txt
+            prettier-output.txt
+            typecheck-output.txt
+          retention-days: 30

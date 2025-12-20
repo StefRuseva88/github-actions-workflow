@@ -1,6 +1,6 @@
-import { Octocat } from "./types/Octocat";
-import { OctocatApi, UserPassword } from "./OctocatApi";
-import { AuthenticationError } from "./errors/AuthenticationError";
+import { Octocat } from './types/Octocat';
+import { OctocatApi, UserPassword } from './OctocatApi';
+import { AuthenticationError } from './errors/AuthenticationError';
 
 interface InMemoryOctocatApi extends OctocatApi {
   addOctocats: (givenCats: Octocat[]) => Promise<void>;
@@ -14,8 +14,8 @@ const createInMemoryOctocatApi = (
   let personalOctoCats: Record<string, Octocat[]> = {};
   const users: UserPassword[] = [
     {
-      userName: "test",
-      password: "test",
+      userName: 'test',
+      password: 'test',
     },
   ];
 
@@ -24,7 +24,7 @@ const createInMemoryOctocatApi = (
       const foundCat = allOctoCats.find(({ id }) => id === itemId);
 
       if (!foundCat) {
-        throw new Error("Cat not found!");
+        throw new Error('Cat not found!');
       }
 
       const existingUserCats = personalOctoCats[userId] ?? [];
@@ -38,7 +38,7 @@ const createInMemoryOctocatApi = (
     removeOctocatFromUser: async ({ itemId, userId }) => {
       const existingUserCats = personalOctoCats[userId] ?? [];
       personalOctoCats[userId] = existingUserCats.filter(
-        (cat) => cat.id !== itemId
+        cat => cat.id !== itemId
       );
       return Promise.resolve(personalOctoCats[userId]);
     },
@@ -55,12 +55,12 @@ const createInMemoryOctocatApi = (
       return;
     },
     loginUser: ({ userName, password }) => {
-      const foundUserIndex = users.findIndex((user) => {
+      const foundUserIndex = users.findIndex(user => {
         return user.userName === userName && user.password === password;
       });
 
       if (foundUserIndex === -1) {
-        throw new AuthenticationError("Invalid  authentication.");
+        throw new AuthenticationError('Invalid  authentication.');
       }
 
       return Promise.resolve({

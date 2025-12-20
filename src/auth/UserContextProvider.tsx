@@ -1,7 +1,7 @@
-import React, { PropsWithChildren, useContext, useState } from "react";
-import { FunctionComponent, ReactElement } from "react";
-import { useOctocatApi } from "../api/OctocatApiProvider";
-import { User } from "../api/types/User";
+import React, { PropsWithChildren, useContext, useState } from 'react';
+import { FunctionComponent, ReactElement } from 'react';
+import { useOctocatApi } from '../api/OctocatApiProvider';
+import { User } from '../api/types/User';
 
 type LoginFunc = ({
   userName,
@@ -34,7 +34,7 @@ const UserContextProvider: FunctionComponent<UserContextProviderProps> = ({
   const login: LoginFunc = async ({ userName, password }) => {
     return octocatApi
       .loginUser({ userName, password })
-      .then((user) => setUser(user));
+      .then(user => setUser(user));
   };
 
   const logout = async () => {

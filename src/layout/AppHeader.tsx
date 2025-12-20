@@ -1,9 +1,9 @@
-import { Button, Header, StyledOcticon } from "@primer/react";
-import styled from "styled-components";
-import { Link } from "react-router-dom";
-import { FunctionComponent, ReactElement } from "react";
-import { MarkGithubIcon } from "@primer/octicons-react";
-import { useUser } from "../auth/UserContextProvider";
+import { Button, Header, StyledOcticon } from '@primer/react';
+import styled from 'styled-components';
+import { Link } from 'react-router-dom';
+import { FunctionComponent, ReactElement } from 'react';
+import { MarkGithubIcon } from '@primer/octicons-react';
+import { useUser } from '../auth/UserContextProvider';
 
 // We can't combine react-routers 'Link' with the
 // Primer 'Link' - so we have to copy the styles

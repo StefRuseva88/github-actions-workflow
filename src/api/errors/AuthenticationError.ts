@@ -1,4 +1,4 @@
-const AUTHENTICATION_ERROR = "AuthenticationError";
+const AUTHENTICATION_ERROR = 'AuthenticationError';
 class AuthenticationError extends Error {
   constructor(message: string) {
     super(message);

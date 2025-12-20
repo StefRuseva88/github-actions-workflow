@@ -1,4 +1,4 @@
-const SERVER_UNAVAILABLE_ERROR = "ServerUnavailableError";
+const SERVER_UNAVAILABLE_ERROR = 'ServerUnavailableError';
 class ServerUnavailableError extends Error {
   constructor(message: string) {
     super(message);
