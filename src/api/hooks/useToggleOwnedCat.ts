@@ -1,7 +1,7 @@
-import { useMutation, useQueryClient } from "react-query";
-import { useOctocatApi } from "../OctocatApiProvider";
-import { OctocatState } from "../types/OctocatState";
-import { useUser } from "../../auth/UserContextProvider";
+import { useMutation, useQueryClient } from 'react-query';
+import { useOctocatApi } from '../OctocatApiProvider';
+import { OctocatState } from '../types/OctocatState';
+import { useUser } from '../../auth/UserContextProvider';
 
 const useToggleOwnedCat = () => {
   const octocatApi = useOctocatApi();
@@ -18,7 +18,7 @@ const useToggleOwnedCat = () => {
     },
     {
       onSuccess: () => {
-        queryClient.invalidateQueries("octocats");
+        queryClient.invalidateQueries('octocats');
       },
     }
   );

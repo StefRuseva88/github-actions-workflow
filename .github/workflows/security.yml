@@ -1,13 +1,22 @@
-name: Dependency Review
-on: pull_request
+name: Security and Dependency Review
+on: 
+  pull_request:
+  push:
+    branches: [ main ]
+  schedule:
+    # Run weekly security audit on Monday at 9 AM UTC
+    - cron: '0 9 * * 1'
 
 permissions:
   contents: read
   pull-requests: write
+  issues: write
 
 jobs:
   dependency-review:
+    name: Dependency Review
     runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
@@ -15,3 +24,93 @@ jobs:
         uses: actions/dependency-review-action@v4
         with:
           comment-summary-in-pr: true
+          fail-on-severity: moderate
+
+  npm-audit:
+    name: NPM Security Audit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+      
+      - name: Install Dependencies
+        run: npm ci
+        env:
+          CYPRESS_INSTALL_BINARY: 0
+      
+      - name: Run NPM Audit
+        id: audit
+        run: |
+          echo "Running npm audit..."
+          npm audit --json > audit-report.json || true
+          npm audit
+        continue-on-error: true
+      
+      - name: Check for Vulnerabilities
+        id: check-vulns
+        run: |
+          VULN_COUNT=$(jq '.metadata.vulnerabilities.total' audit-report.json)
+          echo "vulnerabilities=$VULN_COUNT" >> $GITHUB_OUTPUT
+          echo "Found $VULN_COUNT vulnerabilities"
+          
+          if [ "$VULN_COUNT" -gt "0" ]; then
+            echo "has_vulnerabilities=true" >> $GITHUB_OUTPUT
+          else
+            echo "has_vulnerabilities=false" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Attempt Automatic Fix
+        if: steps.check-vulns.outputs.has_vulnerabilities == 'true'
+        run: |
+          echo "Attempting to fix vulnerabilities automatically..."
+          npm audit fix --dry-run > audit-fix-preview.txt || true
+          cat audit-fix-preview.txt
+      
+      - name: Comment on PR with Audit Results
+        if: github.event_name == 'pull_request' && steps.check-vulns.outputs.has_vulnerabilities == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const auditReport = JSON.parse(fs.readFileSync('audit-report.json', 'utf8'));
+            const fixPreview = fs.readFileSync('audit-fix-preview.txt', 'utf8');
+            
+            const vulnSummary = auditReport.metadata.vulnerabilities;
+            const total = vulnSummary.total;
+            
+            let comment = `## 🔒 NPM Security Audit Results\n\n`;
+            comment += `Found **${total}** vulnerabilities:\n`;
+            comment += `- Critical: ${vulnSummary.critical || 0}\n`;
+            comment += `- High: ${vulnSummary.high || 0}\n`;
+            comment += `- Moderate: ${vulnSummary.moderate || 0}\n`;
+            comment += `- Low: ${vulnSummary.low || 0}\n\n`;
+            
+            if (total > 0) {
+              comment += `### 🔧 Suggested Fixes\n\n`;
+              comment += `Run \`npm audit fix\` to automatically fix vulnerabilities that don't require breaking changes.\n\n`;
+              comment += `For vulnerabilities requiring manual review, run \`npm audit fix --force\`.\n\n`;
+              comment += `<details>\n<summary>Preview of automatic fixes</summary>\n\n\`\`\`\n${fixPreview}\n\`\`\`\n</details>`;
+            }
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
+      
+      - name: Upload Audit Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: npm-audit-report
+          path: |
+            audit-report.json
+            audit-fix-preview.txt
+          retention-days: 30

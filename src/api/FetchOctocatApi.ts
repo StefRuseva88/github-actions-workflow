@@ -1,8 +1,8 @@
-import { AuthenticationError } from "./errors/AuthenticationError";
-import { ServerUnavailableError } from "./errors/ServerUnavailableError";
-import { OctocatApi } from "./OctocatApi";
-import { Octocat } from "./types/Octocat";
-import { User } from "./types/User";
+import { AuthenticationError } from './errors/AuthenticationError';
+import { ServerUnavailableError } from './errors/ServerUnavailableError';
+import { OctocatApi } from './OctocatApi';
+import { Octocat } from './types/Octocat';
+import { User } from './types/User';
 
 const checkErrors = (response: Response) => {
   if (!response.ok) {
@@ -19,9 +19,9 @@ const createFetchOctocatApi = (endpoint: string): OctocatApi => {
   return {
     addOctocatToUser: async ({ itemId, userId }): Promise<Octocat[]> => {
       return fetch(`${endpoint}/user/${userId}/octocats`, {
-        method: "POST",
+        method: 'POST',
         headers: {
-          "content-type": "application/json",
+          'content-type': 'application/json',
         },
         body: JSON.stringify({
           itemId,
@@ -32,9 +32,9 @@ const createFetchOctocatApi = (endpoint: string): OctocatApi => {
     },
     removeOctocatFromUser: async ({ itemId, userId }): Promise<Octocat[]> => {
       return fetch(`${endpoint}/user/${userId}/octocats`, {
-        method: "DELETE",
+        method: 'DELETE',
         headers: {
-          "content-type": "application/json",
+          'content-type': 'application/json',
         },
         body: JSON.stringify({
           itemId,
@@ -45,19 +45,19 @@ const createFetchOctocatApi = (endpoint: string): OctocatApi => {
     },
     fetchAllOctocats: async (): Promise<Octocat[]> => {
       return fetch(`${endpoint}/octocats`, {
-        method: "GET",
+        method: 'GET',
         headers: {
-          "content-type": "application/json",
+          'content-type': 'application/json',
         },
       })
         .then(checkErrors)
-        .then((res) => res.json());
+        .then(res => res.json());
     },
     fetchUserOctocats: async (userId: string): Promise<Octocat[]> => {
       return fetch(`${endpoint}/user/${userId}/octocats`, {
-        method: "GET",
+        method: 'GET',
         headers: {
-          "content-type": "application/json",
+          'content-type': 'application/json',
         },
       })
         .then(checkErrors)
@@ -65,25 +65,25 @@ const createFetchOctocatApi = (endpoint: string): OctocatApi => {
     },
     loginUser: async ({ userName, password }): Promise<User> => {
       return fetch(`${endpoint}/login`, {
-        method: "POST",
+        method: 'POST',
         headers: {
-          "content-type": "application/json",
+          'content-type': 'application/json',
         },
         body: JSON.stringify({
           userName,
           password,
         }),
       })
-        .then((response) => {
+        .then(response => {
           if (!response.ok) {
             console.error(
               `Received Error from Backend with status ${response.status} and body ${response.statusText}`
             );
             if (response.status >= 500) {
-              throw new ServerUnavailableError("Server Unavailable.");
+              throw new ServerUnavailableError('Server Unavailable.');
             }
 
-            throw new AuthenticationError("Login Failed.");
+            throw new AuthenticationError('Login Failed.');
           }
           return response;
         })
@@ -91,7 +91,7 @@ const createFetchOctocatApi = (endpoint: string): OctocatApi => {
     },
     logout: async (): Promise<void> => {
       return fetch(`${endpoint}/logout`, {
-        method: "POST",
+        method: 'POST',
       })
         .then(checkErrors)
         .then(() => undefined);

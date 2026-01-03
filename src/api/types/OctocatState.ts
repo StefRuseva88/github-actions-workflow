@@ -1,4 +1,4 @@
-import { Octocat } from "./Octocat";
+import { Octocat } from './Octocat';
 
 type OctocatState = Octocat & {
   owned: boolean;

@@ -1,8 +1,8 @@
-import { Box, IconButton, Label, Text } from "@primer/react";
-import { OctocatState } from "../api/types/OctocatState";
-import { FunctionComponent, ReactElement } from "react";
-import styled from "styled-components";
-import { StarIcon, XCircleIcon } from "@primer/octicons-react";
+import { Box, IconButton, Label, Text } from '@primer/react';
+import { OctocatState } from '../api/types/OctocatState';
+import { FunctionComponent, ReactElement } from 'react';
+import styled from 'styled-components';
+import { StarIcon, XCircleIcon } from '@primer/octicons-react';
 
 interface OctoItemBoxProps {
   octocat: OctocatState;
@@ -45,7 +45,7 @@ const OctoItemBox: FunctionComponent<OctoItemBoxProps> = ({
         position="relative"
         borderWidth={1}
         borderStyle="solid"
-        height={"100%"}
+        height={'100%'}
       >
         {octocat.owned && (
           <Box display="inline" position="absolute">

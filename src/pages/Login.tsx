@@ -1,18 +1,18 @@
-import { Box, Button, Flash, FormControl, TextInput } from "@primer/react";
-import { FunctionComponent, ReactElement, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { AUTHENTICATION_ERROR } from "../api/errors/AuthenticationError";
-import { SERVER_UNAVAILABLE_ERROR } from "../api/errors/ServerUnavailableError";
-import { useUser } from "../auth/UserContextProvider";
+import { Box, Button, Flash, FormControl, TextInput } from '@primer/react';
+import { FunctionComponent, ReactElement, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { AUTHENTICATION_ERROR } from '../api/errors/AuthenticationError';
+import { SERVER_UNAVAILABLE_ERROR } from '../api/errors/ServerUnavailableError';
+import { useUser } from '../auth/UserContextProvider';
 
 const mapErrorMessage = (error: Error) => {
   switch (error.name) {
     case AUTHENTICATION_ERROR:
-      return "Invalid username or password.";
+      return 'Invalid username or password.';
     case SERVER_UNAVAILABLE_ERROR:
-      return "Authentication server not available. Please try again later.";
+      return 'Authentication server not available. Please try again later.';
     default:
-      return "Unexpected Error. Please contact the administrator.";
+      return 'Unexpected Error. Please contact the administrator.';
   }
 };
 
@@ -21,8 +21,8 @@ const Login: FunctionComponent = (): ReactElement => {
 
   const { login } = useUser();
 
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState<string | undefined>();
 
   const handleSubmit = async (evt: React.FormEvent) => {
@@ -30,7 +30,7 @@ const Login: FunctionComponent = (): ReactElement => {
     setError(undefined);
     await login({ userName: username, password })
       .then((): void => {
-        navigate("/");
+        navigate('/');
       })
       .catch((err: Error): void => {
         setError(mapErrorMessage(err));
@@ -44,7 +44,7 @@ const Login: FunctionComponent = (): ReactElement => {
           <FormControl.Label>Username</FormControl.Label>
           <TextInput
             value={username}
-            onChange={(event) => setUsername(event.target.value)}
+            onChange={event => setUsername(event.target.value)}
           />
         </FormControl>
         <FormControl>
@@ -52,7 +52,7 @@ const Login: FunctionComponent = (): ReactElement => {
           <TextInput
             type="password"
             value={password}
-            onChange={(event) => setPassword(event.target.value)}
+            onChange={event => setPassword(event.target.value)}
           />
         </FormControl>
         <Button>Sign in</Button>

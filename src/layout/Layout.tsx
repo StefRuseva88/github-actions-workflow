@@ -1,10 +1,10 @@
-import { AppHeader } from "./AppHeader";
+import { AppHeader } from './AppHeader';
 import React, {
   FunctionComponent,
   PropsWithChildren,
   ReactElement,
-} from "react";
-import { PageLayout } from "@primer/react";
+} from 'react';
+import { PageLayout } from '@primer/react';
 
 const Layout: FunctionComponent<PropsWithChildren> = ({
   children,
@@ -13,14 +13,14 @@ const Layout: FunctionComponent<PropsWithChildren> = ({
     <PageLayout rowGap="none">
       <PageLayout.Header
         sx={{
-          backgroundColor: "white",
+          backgroundColor: 'white',
         }}
       >
         <AppHeader />
       </PageLayout.Header>
       <PageLayout.Content
         sx={{
-          backgroundColor: "white",
+          backgroundColor: 'white',
         }}
       >
         {children}
