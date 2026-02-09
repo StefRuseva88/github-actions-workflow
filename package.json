@@ -39,7 +39,7 @@
     "eslint-config-prettier": "10.1.8",
     "eslint-plugin-prettier": "4.2.1",
     "eslint-plugin-primer-react": "1.0.1",
-    "jsdom": "20.0.3",
+    "jsdom": "28.0.0",
     "prettier": "2.8.0",
     "typescript": "5.9.3",
     "vite": "5.4.21",
