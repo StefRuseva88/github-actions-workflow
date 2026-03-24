@@ -41,7 +41,7 @@
     "eslint-plugin-primer-react": "1.0.1",
     "jsdom": "29.0.1",
     "prettier": "2.8.0",
-    "typescript": "5.9.3",
+    "typescript": "6.0.2",
     "vite": "5.4.21",
     "vitest": "3.1.1"
   },
